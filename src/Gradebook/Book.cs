@@ -1,40 +1,14 @@
-using System.Collections.Generic;
 using System;
 
 namespace Gradebook
 {
-    public class Book
+    public delegate void GradeAddedDelegate(object sender, EventArgs args);
+
+    public abstract class Book : NamedObject, IBook
     {
-        public Book(string name)
-        {
-            grades = new List<double>();
-            this.name = name;
-        }
-
-        public void AddGrade(double grade)
-        {
-            grades.Add(grade);
-        }
-
-        public Statistics GetStatistics()
-        {
-            var result = new Statistics();
-            result.Average = 0.0;
-            result.High = double.MinValue;
-            result.Low = double.MaxValue;
-
-            foreach (double grade in grades)
-            {
-                result.High = Math.Max(grade, result.High);
-                result.Low = Math.Min(grade, result.Low);
-                result.Average += grade;
-            }
-            result.Average /= grades.Count;
-
-            return result;
-        }
-
-        private List<double> grades;
-        private string name;
+        protected Book(string name) : base(name) { }
+        public abstract event GradeAddedDelegate GradeAdded;
+        public abstract void AddGrade(double grade);
+        public abstract Statistics GetStatistics();
     }
 }
